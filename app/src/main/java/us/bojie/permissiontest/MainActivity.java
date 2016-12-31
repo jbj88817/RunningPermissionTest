@@ -17,6 +17,12 @@ public class MainActivity extends BaseActivity {
 //        File file = getExternalFilesDir("abc");
     }
 
+    @Override
+    protected void onDestroy() {
+        ActivityCollector.removeActivity(this);
+        super.onDestroy();
+    }
+
     public void buttonClick(View view) {
 
         Util.test();

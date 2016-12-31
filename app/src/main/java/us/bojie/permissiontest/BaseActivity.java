@@ -2,7 +2,9 @@ package us.bojie.permissiontest;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,18 @@ import java.util.List;
 public class BaseActivity extends AppCompatActivity {
 
     private static PermissionListener mlistener;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        ActivityCollector.removeActivity(this);
+        super.onDestroy();
+    }
 
     public static void requestRuntimePermission(String[] permissions, PermissionListener listener) {
         Activity topActivity = ActivityCollector.getTopActivity();

@@ -1,5 +1,6 @@
 package us.bojie.permissiontest;
 
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -15,20 +16,24 @@ import java.util.List;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private PermissionListener mlistener;
+    private static PermissionListener mlistener;
 
-    public void requestRuntimePermission(String[] permissions, PermissionListener listener) {
+    public static void requestRuntimePermission(String[] permissions, PermissionListener listener) {
+        Activity topActivity = ActivityCollector.getTopActivity();
+        if (topActivity == null) {
+            return;
+        }
         mlistener = listener;
         List<String> permissionList = new ArrayList<>();
 
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(topActivity, permission) != PackageManager.PERMISSION_GRANTED) {
                 permissionList.add(permission);
             }
         }
 
         if (!permissionList.isEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+            ActivityCompat.requestPermissions(topActivity, permissionList.toArray(new String[permissionList.size()]), 1);
         } else {
             mlistener.onGranted();
         }
